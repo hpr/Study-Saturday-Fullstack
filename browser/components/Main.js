@@ -1,37 +1,25 @@
 import React, { Component } from 'react';
-import axios from 'axios';
+import {connect} from 'react-redux';
+import {getStudents} from '../store';
 
 import StudentList from './StudentList.js';
 import SingleStudent from './SingleStudent.js';
 import NewStudentForm from './NewStudentForm.js';
 
-export default class Main extends Component {
+export class Main extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      students: [],
-      selectedStudent: {},
       showStudent: false,
+      selectedStudent: {},
     };
 
     this.selectStudent = this.selectStudent.bind(this);
     this.handleClick = this.handleClick.bind(this);
-    this.addStudent = this.addStudent.bind(this);
   }
 
-  componentDidMount() {
-    this.getStudents();
-  }
-
-  async getStudents() {
-    console.log('fetching');
-    try {
-      const { data } = await axios.get('/student');
-      this.setState({ students: data });
-      console.log('THis is the State', this.state);
-    } catch (err) {
-      console.error(err);
-    }
+  async componentDidMount() {
+    await this.props.getStudents();
   }
 
   selectStudent(student) {
@@ -39,15 +27,7 @@ export default class Main extends Component {
       selectedStudent: student,
     });
   }
-
-  async addStudent(student) {
-    const { data } = await axios.post('/student', student);
-    this.setState({
-      students: [...this.state.students, data],
-      showStudent: false,
-    });
-  }
-
+  
   handleClick(e) {
     return this.setState({
       showStudent: !this.state.showStudent,
@@ -61,7 +41,7 @@ export default class Main extends Component {
         <h1>Students</h1>
         <button onClick={this.handleClick}>Add Student</button>
         {this.state.showStudent ? (
-          <NewStudentForm addStudent={this.addStudent} />
+          <NewStudentForm />
         ) : null}
         <table>
           <thead>
@@ -71,7 +51,7 @@ export default class Main extends Component {
             </tr>
           </thead>
           <StudentList
-            students={this.state.students}
+            students={this.props.students}
             selectStudent={this.selectStudent}
           />
         </table>
@@ -82,3 +62,13 @@ export default class Main extends Component {
     );
   }
 }
+
+const mapState = state => ({
+  students: state.students,
+});
+
+const mapDispatch = dispatch => ({
+  getStudents: () => dispatch(getStudents()),
+});
+
+export default connect(mapState, mapDispatch)(Main);

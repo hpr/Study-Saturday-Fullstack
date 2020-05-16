@@ -9,30 +9,27 @@ const avgGrade = tests => {
 }
 
 const SingleStudent = (props) => {
-    console.log('ppp', props)
-   return ( <div>
-        <h3>{props.student.fullName}</h3>
-        <h3>Average grade: {avgGrade(props.student.tests)}%</h3>
-        <div>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Subject</th>
-                        <th>Grade</th>
-                    </tr>
-                </thead>
-                <tbody>
-                {
-                    props.student.tests.map((test) => {
-                        return (
-                            <tr key={test.id}>
-                                <td>{test.subject}</td>
-                                <td>{test.grade}%</td>
-                            </tr>
-                        )
-                    }
-                    )
-                }
+  return (
+    <div>
+      <h3>{props.student.fullName}</h3>
+      <h3>Average grade: {avgGrade(props.student.tests)}%</h3>
+      <div>
+        <table>
+          <thead>
+            <tr>
+              <th>Subject</th>
+              <th>Grade</th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              props.student.tests.map((test) => (
+                <tr key={test.id}>
+                  <td>{test.subject}</td>
+                  <td>{test.grade}%</td>
+                </tr>
+              ))
+            }
                 </tbody>
             </table>
         </div>
